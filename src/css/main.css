@@ -1,0 +1,35 @@
+
+
+
+table {
+  margin: 48px auto;
+  border: none; /*border: solid 1px #333;*/
+  border-collapse: collapse
+}
+
+
+
+
+
+td {
+  width: 66px; height: 66px;
+  border: none; /*border: solid 1px #333;*/
+  padding: 0;
+  text-align: center;
+  /*perspective: 500px;*/
+}
+
+.card {
+  width: 61px; height: 61px;
+  background-color: #69f;
+  cursor: pointer;
+  transform: rotateY(0deg);
+  transition: 0.2s;
+  box-shadow: 0.5px 0.5px 0.5px 0px #000;
+  line-height: 61px;
+}
+
+.card.rotate {
+  transform: rotateY(45deg);
+}
+
