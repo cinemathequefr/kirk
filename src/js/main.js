@@ -5,6 +5,7 @@ $(function () {
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
   var at = arrayListConverter(boardDims[0]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
 
+
   var list = _(new Array(pairCount * 2))
     .map(function (a, i) {
       return {
@@ -39,11 +40,12 @@ $(function () {
   _(list).forEach(function (card, i) {
     window.setTimeout(function () {
       // $("<div class='card rotate'>" + card.value + "</div>")
-      $("<div class='card rotate'></div>")
+      $("<div class='card back rotate'></div>")
       .data("card", card)
       .css({
         marginTop: _.random(0, 3) + "px",
-        marginLeft: _.random(0, 3) + "px"
+        marginLeft: _.random(0, 3) + "px",
+        backgroundImage: "url(img/" + card.value +".jpg)"
       })
       .appendTo($("#i" + i));
       window.setTimeout(function () { $("#i" + i).children(".card").removeClass("rotate"); }, 10);
@@ -61,8 +63,16 @@ $(function () {
   function play($card) {
     var card  = $card.data("card");
     if (card.state === 0) {
-      // $card.addClass("face").html(card.value);
-      $card.addClass("face").css({ backgroundImage: "url(img/" + _.random(1, 3) +".jpg)" });
+      $card
+        .removeClass("back")
+        .addClass("face")
+        .css({ backgroundImage: "url(img/" + card.value +".jpg)" });
+      card.state = 1;
+    } else if (card.state === 1) {
+      $card
+        .removeClass("face")
+        .addClass("back");
+      card.state = 0;
     }
   }
 

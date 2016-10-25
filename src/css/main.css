@@ -23,7 +23,10 @@ td {
   transition: transform 0.2s;
   box-shadow: -1px 1px 1px 0px #000;
   line-height: 61px;
-  background-image: none;
+}
+
+.card.back {
+  background-image: none !important;
 }
 
 .card.face {
