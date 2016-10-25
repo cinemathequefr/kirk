@@ -16,7 +16,6 @@ $(function () {
     .shuffle()
     .value();
 
-
   // Create board
   $([
     "<table class='board'>",
@@ -36,9 +35,12 @@ $(function () {
   .appendTo("body");
 
   // Place cards
+  
   _(list).forEach(function (card, i) {
     window.setTimeout(function () {
-      $("<div class='card rotate'>" + card.value + "</div>")
+      // $("<div class='card rotate'>" + card.value + "</div>")
+      $("<div class='card rotate'></div>")
+      .data("card", card)
       .css({
         marginTop: _.random(0, 3) + "px",
         marginLeft: _.random(0, 3) + "px"
@@ -47,6 +49,22 @@ $(function () {
       window.setTimeout(function () { $("#i" + i).children(".card").removeClass("rotate"); }, 10);
     }, i * 25);
   });
+
+  window.setTimeout(ready, list.length * 25);
+
+  function ready() {
+    $(".board").on("click", ".card", function (e) {
+      play($(e.target));
+    });
+  }
+
+  function play($card) {
+    var card  = $card.data("card");
+    if (card.state === 0) {
+      // $card.addClass("face").html(card.value);
+      $card.addClass("face").css({ backgroundImage: "url(img/" + _.random(1, 3) +".jpg)" });
+    }
+  }
 
 
   /*
@@ -79,7 +97,6 @@ $(function () {
    */
   function arrayListConverter(w) {
     if (w < 1) return null;
-    console.log(w);
     return {
       coords: function (x, y) { return (x < w ? (w * y) + x : null); },
       index: function (i) { return [i % w, Math.floor(i / w)]; }
