@@ -2,21 +2,32 @@
 
 
 table {
-  margin: 48px auto;
-  border: none;
-  border-collapse: collapse
+  border: none; width: auto; margin: 0 auto;
+  border-collapse: collapse;
 }
 
 
 td {
-  width: 66px; height: 66px;
+  /*width: 66px; height: 66px;*/
   border: none;
   padding: 0;
   text-align: center;
 }
 
+
+.container {
+  overflow: hidden;
+  width: 100%; max-width: 1000px; height: 100vh; 
+  margin: 0 auto; padding: 24px;
+  /*outline: solid 1px red; background-color: #9cf;*/
+  box-sizing: border-box;
+}
+
+
 .card {
-  width: 61px; height: 61px;
+  /*margin: 5px;*/
+  /*width: 61px; height: 61px;*/
+  width: 80px; height: 80px;
   background-color: #69f;
   cursor: pointer;
   transform: rotateY(180deg);

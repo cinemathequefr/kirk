@@ -2,8 +2,19 @@ $(function () {
   "use strict";
 
   var pairCount = 50;
+  // var pairCount = 10;
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
-  var at = arrayListConverter(boardDims[0]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
+  var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
+  var $rootEl = $(".container").eq(0);
+
+  var queue = new createjs.LoadQueue(true); // http://www.createjs.com/Docs/PreloadJS/classes/LoadQueue.html
+  queue.setMaxConnections(10);
+  queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
+
+  // queue.on("complete", function () {
+  //   console.log("Hey");
+  // });
+
 
 
   var list = _(new Array(pairCount * 2))
@@ -14,8 +25,10 @@ $(function () {
         state: 0
       };
     })
-    .shuffle()
+    // .shuffle()
     .value();
+
+  console.log(list);
 
   // Create board
   $([
@@ -33,7 +46,7 @@ $(function () {
     }).join(""),
     "</table>"
   ].join(""))
-  .appendTo("body");
+  .appendTo($rootEl);
 
   // Place cards
   
@@ -43,8 +56,10 @@ $(function () {
       $("<div class='card back rotate'></div>")
       .data("card", card)
       .css({
-        marginTop: _.random(0, 3) + "px",
-        marginLeft: _.random(0, 3) + "px",
+        marginTop: _.random(3, 6) + "px",
+        marginLeft: _.random(3, 6) + "px",
+        // marginTop: _.random(0, 3) + "px",
+        // marginLeft: _.random(0, 3) + "px",
         backgroundImage: "url(img/" + card.value +".jpg)"
       })
       .appendTo($("#i" + i));
@@ -52,29 +67,63 @@ $(function () {
     }, i * 25);
   });
 
-  window.setTimeout(ready, list.length * 25);
+  // window.setTimeout(ready, list.length * 25);
+
+  queue.on("complete", ready);
 
   function ready() {
+    console.log("Ready");
     $(".board").on("click", ".card", function (e) {
       play($(e.target));
     });
   }
 
+
   function play($card) {
     var card  = $card.data("card");
+
     if (card.state === 0) {
-      $card
-        .removeClass("back")
-        .addClass("face")
-        .css({ backgroundImage: "url(img/" + card.value +".jpg)" });
+      $card.removeClass("back").addClass("face");
       card.state = 1;
     } else if (card.state === 1) {
-      $card
-        .removeClass("face")
-        .addClass("back");
+      $card.addClass("back").removeClass("face");
       card.state = 0;
     }
+
+    // if (card.state === 0 && step() < 2) {
+    //   $card.removeClass("back").addClass("face");
+    //   card.state = step() + 1;
+    //   if (step() === 2) {
+    //   }
+    // }
+
   }
+
+
+  function step() {
+    return _(list).filter(function (c) { return c.state === 1 || c.state === 2; }).value().length;
+  }
+
+
+  function getCard(f) {
+    return _(list).find(f);
+  }
+
+
+  // function pair() {
+  //   var c1 = getCard({ state: 1 });
+  //   var c2 = getCard({ state: 2 });
+  //   if (c1.)
+  //   return (c1.value === c2.value && c1.value !== undefined ? [c1, c2] : null); // WARNING: Maybe don't do this?
+  // }
+
+/*
+  function isPair() {
+    var v1 = getCard({ state: 1 }).value;
+    var v2 = getCard({ state: 2 }).value;
+    return v1 === v2 && v1 !== undefined;
+  }
+*/
 
 
   /*
