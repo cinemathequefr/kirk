@@ -1,13 +1,13 @@
 $(function () {
   "use strict";
 
-  var pairCount = 50;
+  var pairCount = 4;
   // var pairCount = 10;
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
   var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
   var $rootEl = $(".container").eq(0);
 
-  var queue = new createjs.LoadQueue(true); // http://www.createjs.com/Docs/PreloadJS/classes/LoadQueue.html
+  var queue = new createjs.LoadQueue(false); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
   queue.setMaxConnections(10);
   queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
 
