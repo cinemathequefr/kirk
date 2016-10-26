@@ -1,8 +1,7 @@
 $(function () {
   "use strict";
 
-  var pairCount = 4;
-  // var pairCount = 10;
+  var pairCount = 50;
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
   var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
   var $rootEl = $(".container").eq(0);
