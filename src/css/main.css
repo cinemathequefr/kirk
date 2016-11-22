@@ -1,23 +1,27 @@
 
-
+body {
+  overflow: hidden;
+}
 
 table {
   border: none; width: auto; margin: 0 auto;
   border-collapse: collapse;
+  width: 860px; height: 860px;
 }
 
 
 td {
-  /*width: 66px; height: 66px;*/
+  min-width: 86px; width: 86px; height: 86px;
   border: none;
   padding: 0;
   text-align: center;
+
 }
 
 
 .container {
   overflow: hidden;
-  width: 100%; max-width: 1000px; height: 100vh; 
+  width: 100%; max-width: 1000px; /*height: 100vh; */
   margin: 0 auto; padding: 24px;
   /*outline: solid 1px red; background-color: #9cf;*/
   box-sizing: border-box;
@@ -25,13 +29,10 @@ td {
 
 
 .card {
-  /*margin: 5px;*/
-  /*width: 61px; height: 61px;*/
   width: 80px; height: 80px;
   background-color: #69f;
   cursor: pointer;
-  transform: rotateY(180deg);
-  transition: transform 0.2s;
+  transform: rotateY(180deg); transition: transform 0.2s;
   box-shadow: -1px 1px 1px 0px #000;
   line-height: 61px;
 }
@@ -48,6 +49,5 @@ td {
 
 .card.rotate {
   transform: rotateY(135deg);
-
 }
 
