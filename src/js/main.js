@@ -1,7 +1,8 @@
 $(function () {
   "use strict";
 
-  var pairCount = 50;
+  // var pairCount = 50;
+  var pairCount = 32;
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
   var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
   var $rootEl = $(".container").eq(0);
@@ -14,8 +15,6 @@ $(function () {
   //   console.log("Hey");
   // });
 
-
-
   var list = _(new Array(pairCount * 2))
     .map(function (a, i) {
       return {
@@ -24,10 +23,12 @@ $(function () {
         state: 0
       };
     })
-    // .shuffle()
+    .shuffle()
     .value();
 
-  console.log(list);
+
+  // Testing board size
+  boardSize(106);
 
   // Create board
   $([
@@ -51,14 +52,12 @@ $(function () {
   
   _(list).forEach(function (card, i) {
     window.setTimeout(function () {
-      // $("<div class='card rotate'>" + card.value + "</div>")
-      $("<div class='card back rotate'></div>")
+      // $("<div class='card back rotate'>" + card.value + "</div>")
+      $("<div class='card back rotate' title='" + card.value + "'></div>")
       .data("card", card)
       .css({
         marginTop: _.random(3, 6) + "px",
         marginLeft: _.random(3, 6) + "px",
-        // marginTop: _.random(0, 3) + "px",
-        // marginLeft: _.random(0, 3) + "px",
         backgroundImage: "url(img/" + card.value +".jpg)"
       })
       .appendTo($("#i" + i));
@@ -71,7 +70,7 @@ $(function () {
   queue.on("complete", ready);
 
   function ready() {
-    console.log("Ready");
+    // console.log("Ready");
     $(".board").on("click", ".card", function (e) {
       play($(e.target));
     });
@@ -158,6 +157,25 @@ $(function () {
     return {
       coords: function (x, y) { return (x < w ? (w * y) + x : null); },
       index: function (i) { return [i % w, Math.floor(i / w)]; }
+    };
+  }
+
+
+  /**
+   * boardSize
+   * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
+   * @return {}
+   */
+  function boardSize(minCellSize) {
+    var boardSizePx = Math.min($(window).width(), $(window).height());
+    var maxRows = Math.floor(boardSizePx / minCellSize);
+    var rowsCount = _.reduce([10, 8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
+      return (acc <= maxRows ? acc : i);
+    });
+    var cellSizePx = math.floor(boardSizePx / rowsCount);
+    return {
+      rowsCount: rowsCount,
+      cellSizePx: cellSizePx
     };
   }
 

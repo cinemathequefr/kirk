@@ -30,15 +30,20 @@ td {
 
 .card {
   width: 80px; height: 80px;
+  width: 105px; height: 105px;
   background-color: #69f;
   cursor: pointer;
   transform: rotateY(180deg); transition: transform 0.2s;
   box-shadow: -1px 1px 1px 0px #000;
-  line-height: 61px;
+  line-height: 80px;
+  color: #ff3; 
+  font-size: 1.25rem; font-weight: 700;
+  text-shadow: 1px 1px 2px #111;
 }
 
 .card.back {
   background-image: none !important;
+  color: transparent !important; text-shadow: none !important;
 }
 
 .card.face {
