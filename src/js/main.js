@@ -1,19 +1,18 @@
 $(function () {
   "use strict";
 
-  // var pairCount = 50;
-  var pairCount = 32;
+  var boardSize = calcBoardSize(96, 24);
+  var pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
+
+  // NB: boardDims/squarest are not useful, pairCount already makes the board a square!
   var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
+
   var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
   var $rootEl = $(".container").eq(0);
 
   var queue = new createjs.LoadQueue(false); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
   queue.setMaxConnections(10);
   queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
-
-  // queue.on("complete", function () {
-  //   console.log("Hey");
-  // });
 
   var list = _(new Array(pairCount * 2))
     .map(function (a, i) {
@@ -27,19 +26,16 @@ $(function () {
     .value();
 
 
-  // Testing board size
-  boardSize(106);
-
   // Create board
   $([
-    "<table class='board'>",
+    "<table class='board' style='width:" + (boardSize.rowsCount * boardSize.cellSizePx) + "px; height: " + (boardSize.rowsCount * boardSize.cellSizePx) + "px;'>",
     _(new Array(boardDims[0])).map(function () {
       var y = arguments[1];
       return [
         "<tr>",
         _(new Array(boardDims[1])).map(function () {
           var x = arguments[1];
-          return "<td id='i" + at.coords(x, y) + "'></td>";
+          return "<td id='i" + at.coords(x, y) + "' style='width:" + boardSize.cellSizePx + "px; height:" + boardSize.cellSizePx + "px;'></td>";
         }).join(""),
         "</tr>"
       ].join("");
@@ -56,6 +52,8 @@ $(function () {
       $("<div class='card back rotate' title='" + card.value + "'></div>")
       .data("card", card)
       .css({
+        width: (boardSize.cellSizePx - 6) + "px",
+        height: (boardSize.cellSizePx - 6) + "px",
         marginTop: _.random(3, 6) + "px",
         marginLeft: _.random(3, 6) + "px",
         backgroundImage: "url(img/" + card.value +".jpg)"
@@ -164,15 +162,28 @@ $(function () {
   /**
    * boardSize
    * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
+   * @param verticalMargin <Int> : the pixel space to be used as vertical margin (will be doubled: top and bottom)
    * @return {}
    */
-  function boardSize(minCellSize) {
-    var boardSizePx = Math.min($(window).width(), $(window).height());
+  function calcBoardSize(minCellSize, verticalMargin) {
+    verticalMargin = verticalMargin || 0;
+
+
+
+    var boardSizePx = Math.min($(window).width(), $(window).height()) - (2 * verticalMargin);
     var maxRows = Math.floor(boardSizePx / minCellSize);
     var rowsCount = _.reduce([10, 8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
       return (acc <= maxRows ? acc : i);
     });
-    var cellSizePx = math.floor(boardSizePx / rowsCount);
+    var cellSizePx = Math.floor(boardSizePx / rowsCount);
+
+
+    console.log(verticalMargin);
+    console.log(boardSizePx);
+    console.log(maxRows);
+    console.log(rowsCount);
+    console.log(cellSizePx);
+
     return {
       rowsCount: rowsCount,
       cellSizePx: cellSizePx
