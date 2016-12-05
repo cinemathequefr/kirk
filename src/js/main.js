@@ -63,12 +63,9 @@ $(function () {
     }, i * 25);
   });
 
-  // window.setTimeout(ready, list.length * 25);
-
   queue.on("complete", ready);
 
   function ready() {
-    // console.log("Ready");
     $(".board").on("click", ".card", function (e) {
       play($(e.target));
     });
