@@ -6,20 +6,13 @@ $(function () {
   var rowsCount = boardSize.rowsCount;
   var cellSizePx = boardSize.cellSizePx;
   var $rootEl = $(".container").eq(0);
-
   var game = [];
   var step = 0;
-
   var at = (function (r) { // Converts board coordinates to list index
     return function (x, y) {
       return (x < r ? (r * y) + x : null);
     };
   })(rowsCount);
-
-
-  var queue = new createjs.LoadQueue(true); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
-  queue.setMaxConnections(10);
-  queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
 
   var list = _(new Array(pairCount * 2))
     .map(function (a, i) {
@@ -32,6 +25,11 @@ $(function () {
     .shuffle()
     .value();
 
+  var queue = new createjs.LoadQueue(true); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
+  queue.setMaxConnections(10);
+  queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
+
+  // Build board
   $([
     "<table class='board' style='width:" + (rowsCount * cellSizePx) + "px; height: " + (rowsCount * cellSizePx) + "px;'>",
     _(new Array(rowsCount)).map(function () {
@@ -57,8 +55,8 @@ $(function () {
 
   queue.on("complete", ready);
 
-  function ready() {
 
+  function ready() {
     _(list).forEach(function (card, i) {
       window.setTimeout(function () {
         $(".card").eq(i).addClass("back").removeClass("loading");
@@ -70,7 +68,6 @@ $(function () {
         play($(e.target));
       });
     }, (list.length * 25));
-
   }
 
 
@@ -82,6 +79,7 @@ $(function () {
       .state = 1;
   }
 
+
   function showBack($card) { // Turn a card (or more) on their back
     $card
       .removeClass("face")
@@ -90,6 +88,7 @@ $(function () {
       $(this).data("card").state = 0;
     });
   }
+
 
   function play($card) {
     var card  = $card.data("card");
@@ -134,8 +133,9 @@ $(function () {
 
 });
 
+
 /**
- * boardSize
+ * calcBoardSize
  * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
  * @param verticalMargin <Int> : the pixel space to be used as vertical margin (will be doubled: top and bottom)
  * @return {}
@@ -154,18 +154,3 @@ function calcBoardSize(minCellSize, verticalMargin) {
     cellSizePx: cellSizePx
   };
 }
-
-
-// function pair() {
-//   var c1 = getCard({ state: 1 });
-//   var c2 = getCard({ state: 2 });
-//   if (c1.)
-//   return (c1.value === c2.value && c1.value !== undefined ? [c1, c2] : null); // WARNING: Maybe don't do this?
-// }
-
-
-// function isPair() {
-//   var v1 = getCard({ state: 1 }).value;
-//   var v2 = getCard({ state: 2 }).value;
-//   return v1 === v2 && v1 !== undefined;
-// }
