@@ -3,14 +3,18 @@ $(function () {
 
   var boardSize = calcBoardSize(96, 24);
   var pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
-
-  // NB: boardDims/squarest are not useful, pairCount already makes the board a square!
-  var boardDims = _(squarest(pairCount, 2)).sortBy().value(); // (Sorting makes it vertical somehow)
-
-  var at = arrayListConverter(boardDims[1]); // Two conversion functions: at.coords, at.index (NB: at.index may not be useful here)
+  var rowsCount = boardSize.rowsCount;
+  var cellSizePx = boardSize.cellSizePx;
   var $rootEl = $(".container").eq(0);
 
-  var queue = new createjs.LoadQueue(false); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
+  var at = (function (r) { // Converts board coordinates to list index
+    return function (x, y) {
+      return (x < r ? (r * y) + x : null);
+    };
+  })(rowsCount);
+
+
+  var queue = new createjs.LoadQueue(true); // http://stackoverflow.com/questions/33699468/preloadjs-to-pass-to-background-image
   queue.setMaxConnections(10);
   queue.loadManifest(_(new Array(pairCount)).map(function (e, i) { return ("img/" + i + ".jpg"); }).value());
 
@@ -25,17 +29,21 @@ $(function () {
     .shuffle()
     .value();
 
-
-  // Create board
   $([
-    "<table class='board' style='width:" + (boardSize.rowsCount * boardSize.cellSizePx) + "px; height: " + (boardSize.rowsCount * boardSize.cellSizePx) + "px;'>",
-    _(new Array(boardDims[0])).map(function () {
+    "<table class='board' style='width:" + (rowsCount * cellSizePx) + "px; height: " + (rowsCount * cellSizePx) + "px;'>",
+    _(new Array(rowsCount)).map(function () {
       var y = arguments[1];
       return [
         "<tr>",
-        _(new Array(boardDims[1])).map(function () {
+        _(new Array(rowsCount)).map(function () {
           var x = arguments[1];
-          return "<td id='i" + at.coords(x, y) + "' style='width:" + boardSize.cellSizePx + "px; height:" + boardSize.cellSizePx + "px;'></td>";
+          var i = at(x,y);
+          var card = list[i];
+          return [
+            "<td id='i" + i + "' style='width:" + cellSizePx + "px; height:" + cellSizePx + "px;'>",
+            "<div class='card loading' style='width:" + (cellSizePx - 6) + "px; height:" + (cellSizePx - 6) + "px; margin-top: " + _.random(3, 6) + "px; margin-left: " + _.random(3, 6) + "px; background-image:url(img/" + card.value + ".jpg)' data-card='" + JSON.stringify(card) + "'></div>",
+            "</td>"
+          ].join("");
         }).join(""),
         "</tr>"
       ].join("");
@@ -44,37 +52,27 @@ $(function () {
   ].join(""))
   .appendTo($rootEl);
 
-  // Place cards
-  
-  _(list).forEach(function (card, i) {
-    window.setTimeout(function () {
-      // $("<div class='card back rotate'>" + card.value + "</div>")
-      $("<div class='card back rotate' title='" + card.value + "'></div>")
-      .data("card", card)
-      .css({
-        width: (boardSize.cellSizePx - 6) + "px",
-        height: (boardSize.cellSizePx - 6) + "px",
-        marginTop: _.random(3, 6) + "px",
-        marginLeft: _.random(3, 6) + "px",
-        backgroundImage: "url(img/" + card.value +".jpg)"
-      })
-      .appendTo($("#i" + i));
-      window.setTimeout(function () { $("#i" + i).children(".card").removeClass("rotate"); }, 10);
-    }, i * 25);
-  });
-
   queue.on("complete", ready);
 
   function ready() {
-    $(".board").on("click", ".card", function (e) {
-      play($(e.target));
+
+    _(list).forEach(function (card, i) {
+      window.setTimeout(function () {
+        $(".card").eq(i).addClass("back").removeClass("loading");
+      }, (i * 25));
     });
+
+    window.setTimeout(function () {
+      $(".board").on("click", ".card", function (e) {
+        play($(e.target));
+      });
+    }, (list.length * 25));
+
   }
 
 
   function play($card) {
     var card  = $card.data("card");
-
     if (card.state === 0) {
       $card.removeClass("back").addClass("face");
       card.state = 1;
@@ -82,114 +80,42 @@ $(function () {
       $card.addClass("back").removeClass("face");
       card.state = 0;
     }
-
-    // if (card.state === 0 && step() < 2) {
-    //   $card.removeClass("back").addClass("face");
-    //   card.state = step() + 1;
-    //   if (step() === 2) {
-    //   }
-    // }
-
   }
-
-
-  function step() {
-    return _(list).filter(function (c) { return c.state === 1 || c.state === 2; }).value().length;
-  }
-
-
-  function getCard(f) {
-    return _(list).find(f);
-  }
-
-
-  // function pair() {
-  //   var c1 = getCard({ state: 1 });
-  //   var c2 = getCard({ state: 2 });
-  //   if (c1.)
-  //   return (c1.value === c2.value && c1.value !== undefined ? [c1, c2] : null); // WARNING: Maybe don't do this?
-  // }
-
-/*
-  function isPair() {
-    var v1 = getCard({ state: 1 }).value;
-    var v2 = getCard({ state: 2 }).value;
-    return v1 === v2 && v1 !== undefined;
-  }
-*/
-
-
-  /*
-   * squarest
-   * Given the dimensions of a 2-dimensional array, returns the dimensions of the "squarest" 2-dim array having the same number of elements
-   * @param a <Int> size of the 1st dimension
-   * @param b <Int> size of the 1nd dimension
-   * @return <[Int, Int]> dimensions of the "squarest" equivalent array
-   * Examples: squarest(4, 25) => [10, 10], squarest(2, 25) => [5, 10], squarest(2, 11) => [2, 11]
-   */
-  function squarest(a, b) {
-    var sq = a * b;
-    var x, y = x = Math.floor(Math.sqrt(sq));
-    return (function t(x, y) {
-      return (x * y === sq ? [x, y] : (x * y < sq ? t(x, y + 1) : t(x - 1, y)));
-    })(x, y);
-  }
-
-
-  /**
-   * arrayListConverter
-   * Imagine that we fill a 2-dimensional array of a given width with the elements from a list, from left to right, then top to bottom.
-   * This returns two conversion functions:  from list index to array coordinates, and vice versa.
-   * @param w <Int>: the width of the two-dimensional array
-   * @return ({ coords: <Function>, index: <Function> })
-   * Function coords @param x, y <Int, Int>: array coordinates
-   * Function coords @return <Int>: list index
-   * Function index @param i <Int>: list index
-   * Function index @return x, y <Int, Int>: array coordinates
-   */
-  function arrayListConverter(w) {
-    if (w < 1) return null;
-    return {
-      coords: function (x, y) { return (x < w ? (w * y) + x : null); },
-      index: function (i) { return [i % w, Math.floor(i / w)]; }
-    };
-  }
-
-
-  /**
-   * boardSize
-   * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
-   * @param verticalMargin <Int> : the pixel space to be used as vertical margin (will be doubled: top and bottom)
-   * @return {}
-   */
-  function calcBoardSize(minCellSize, verticalMargin) {
-    verticalMargin = verticalMargin || 0;
-
-
-
-    var boardSizePx = Math.min($(window).width(), $(window).height()) - (2 * verticalMargin);
-    var maxRows = Math.floor(boardSizePx / minCellSize);
-    var rowsCount = _.reduce([10, 8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
-      return (acc <= maxRows ? acc : i);
-    });
-    var cellSizePx = Math.floor(boardSizePx / rowsCount);
-
-
-    console.log(verticalMargin);
-    console.log(boardSizePx);
-    console.log(maxRows);
-    console.log(rowsCount);
-    console.log(cellSizePx);
-
-    return {
-      rowsCount: rowsCount,
-      cellSizePx: cellSizePx
-    };
-  }
-
-
-
-
-
 
 });
+
+/**
+ * boardSize
+ * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
+ * @param verticalMargin <Int> : the pixel space to be used as vertical margin (will be doubled: top and bottom)
+ * @return {}
+ */
+function calcBoardSize(minCellSize, verticalMargin) {
+  verticalMargin = verticalMargin || 0;
+  var boardSizePx = Math.min($(window).width(), $(window).height()) - (2 * verticalMargin);
+  var maxRows = Math.floor(boardSizePx / minCellSize);
+  var rowsCount = _.reduce([10, 8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
+    return (acc <= maxRows ? acc : i);
+  });
+  var cellSizePx = Math.floor(boardSizePx / rowsCount);
+
+  return {
+    rowsCount: rowsCount,
+    cellSizePx: cellSizePx
+  };
+}
+
+
+// function pair() {
+//   var c1 = getCard({ state: 1 });
+//   var c2 = getCard({ state: 2 });
+//   if (c1.)
+//   return (c1.value === c2.value && c1.value !== undefined ? [c1, c2] : null); // WARNING: Maybe don't do this?
+// }
+
+
+// function isPair() {
+//   var v1 = getCard({ state: 1 }).value;
+//   var v2 = getCard({ state: 2 }).value;
+//   return v1 === v2 && v1 !== undefined;
+// }
