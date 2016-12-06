@@ -74,37 +74,55 @@ $(function () {
   }
 
 
+  function showFace($card) { // Turn a card on its face
+    $card
+      .removeClass("back")
+      .addClass("face")
+      .data("card")
+      .state = 1;
+  }
+
+  function showBack($card) { // Turn a card (or more) on their back
+    $card
+      .removeClass("face")
+      .addClass("back");
+    $card.each(function () { // Possibly 2 cards
+      $(this).data("card").state = 0;
+    });
+  }
+
   function play($card) {
     var card  = $card.data("card");
 
-    if (step === 3 || step === 4) {
+    if (step === 3 || step === 4) { // Face turned cards must be turned back before playing move
       if (card.state === 1) {
-        $card.removeClass("face").addClass("back");
-        card.state = 0;
+        showBack($card);
         step = step + 1;
+      } else if (card.state === 0) { // Shortcut: but if player tries to continue playing, we do that automatically
+        showBack(
+          $(".card").filter(function () {
+            return $(this).data("card").state === 1;
+          })
+        );
+        step = 0;
       }
     }
 
-    if (step === 0 || step === 1) {
+    if (step === 0 || step === 1) { // Player can face turn a card
       if (card.state === 0) {
-        $card.removeClass("back").addClass("face");
-        card.state = 1;
+        showFace($card);
         game.push(card);
         step = step + 1;
       }
     }
 
-    if (step === 2) {
-      if (game[game.length - 1].value === game[game.length - 2].value) { // Win
-
-        $(".card")
-        .filter(function () {
+    if (step === 2) { // Two cards are turned on their face
+      if (game[game.length - 1].value === game[game.length - 2].value) { // Winning move
+        $(".card").filter(function () {
           return $(this).data("card").value === game[game.length - 1].value;
-        })
-        .remove();
-
+        }).remove();
         step = 0;
-      } else {
+      } else { // Losing move
         step = 3;
       }
     }
@@ -112,7 +130,6 @@ $(function () {
     if (step === 5) {
       step = 0;
     }
-
   }
 
 });
