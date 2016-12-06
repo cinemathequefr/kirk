@@ -1,13 +1,14 @@
 $(function () {
   "use strict";
 
-  var boardSize = calcBoardSize(96, 24);
+  var boardSize = calcBoardSize(96, 100);
   var pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
   var rowsCount = boardSize.rowsCount;
   var cellSizePx = boardSize.cellSizePx;
   var $rootEl = $(".container").eq(0);
   var game = [];
   var step = 0;
+  var moves = 0;
   var at = (function (r) { // Converts board coordinates to list index
     return function (x, y) {
       return (x < r ? (r * y) + x : null);
@@ -107,6 +108,11 @@ $(function () {
       }
     }
 
+    if (step === 0) {
+      moves = moves + 1;
+      $(".info").html("Coups joués&nbsp;: " + moves);
+    }
+
     if (step === 0 || step === 1) { // Player can face turn a card
       if (card.state === 0) {
         showFace($card);
@@ -137,12 +143,12 @@ $(function () {
 /**
  * calcBoardSize
  * @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
- * @param verticalMargin <Int> : the pixel space to be used as vertical margin (will be doubled: top and bottom)
+ * @param verticalMargin <Int> : the overall pixel space to be left available vertically (for margins, etc.)
  * @return {}
  */
 function calcBoardSize(minCellSize, verticalMargin) {
   verticalMargin = verticalMargin || 0;
-  var boardSizePx = Math.min($(window).width(), $(window).height()) - (2 * verticalMargin);
+  var boardSizePx = Math.min($(window).width(), $(window).height()) - verticalMargin;
   var maxRows = Math.floor(boardSizePx / minCellSize);
   var rowsCount = _.reduce([10, 8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
     return (acc <= maxRows ? acc : i);
