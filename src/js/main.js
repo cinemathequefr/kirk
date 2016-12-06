@@ -7,6 +7,9 @@ $(function () {
   var cellSizePx = boardSize.cellSizePx;
   var $rootEl = $(".container").eq(0);
 
+  var game = [];
+  var step = 0;
+
   var at = (function (r) { // Converts board coordinates to list index
     return function (x, y) {
       return (x < r ? (r * y) + x : null);
@@ -73,13 +76,43 @@ $(function () {
 
   function play($card) {
     var card  = $card.data("card");
-    if (card.state === 0) {
-      $card.removeClass("back").addClass("face");
-      card.state = 1;
-    } else if (card.state === 1) {
-      $card.addClass("back").removeClass("face");
-      card.state = 0;
+
+    if (step === 3 || step === 4) {
+      if (card.state === 1) {
+        $card.removeClass("face").addClass("back");
+        card.state = 0;
+        step = step + 1;
+      }
     }
+
+    if (step === 0 || step === 1) {
+      if (card.state === 0) {
+        $card.removeClass("back").addClass("face");
+        card.state = 1;
+        game.push(card);
+        step = step + 1;
+      }
+    }
+
+    if (step === 2) {
+      if (game[game.length - 1].value === game[game.length - 2].value) { // Win
+
+        $(".card")
+        .filter(function () {
+          return $(this).data("card").value === game[game.length - 1].value;
+        })
+        .remove();
+
+        step = 0;
+      } else {
+        step = 3;
+      }
+    }
+
+    if (step === 5) {
+      step = 0;
+    }
+
   }
 
 });
