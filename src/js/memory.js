@@ -157,6 +157,8 @@ var memory = (function () {
 
     if (step === 0) {
       moves = moves + 1;
+      $("td.moves").html(moves);
+
       // $(".info").html("Coups joués&nbsp;: " + moves + " Paires trouvées&nbsp;: " + pairsFound + " restantes&nbsp;: " + (pairCount - pairsFound));
     }
 
