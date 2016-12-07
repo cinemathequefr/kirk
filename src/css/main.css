@@ -10,7 +10,6 @@ body {
 table {
   border: none; width: auto; margin: 0 auto;
   border-collapse: collapse;
-  /*outline: solid 1px red;*/
 }
 
 td {
@@ -20,7 +19,7 @@ td {
 }
 
 .container {
-  overflow: hidden;
+  position: relative; overflow: hidden;
   width: 100%; max-width: 1000px;
   margin: 0 auto; padding: 24px 24px 12px 24px;
   box-sizing: border-box;
@@ -28,11 +27,15 @@ td {
 
 .card {
   background-color: #69f; background-size: cover; background-repeat: no-repeat;
-  cursor: pointer;
   transform: rotateY(180deg); transition: transform 0.15s;
   box-shadow: -1px 1px 1px 0px #000;
   font-size: 1.25rem; font-weight: 700;
   text-shadow: 1px 1px 2px #111;
+  cursor: pointer;
+}
+
+.card.disabled {
+  cursor: default;
 }
 
 .card.loading {
@@ -55,13 +58,39 @@ td {
   margin: 0 auto;
 }
 
+.messageContainer {
+  display: none; position: absolute; overflow: hidden;
+  top: 30vh; right: 5vh; left: 5vh; height: 40vh;
+  padding: 24px;
+  background-color: #eee; color: #111;
+  box-shadow: 1px 1px 1px rgba(32, 32, 32, .5);
+  font-family: Courgette; font-size: 1.5rem;
+}
+
+
+.messageContainer > img {
+  display: block; float: left;
+  margin-right: 48px;
+}
+
+.btnContinue {
+  width: 100%; margin: 24px auto;
+  background-color: #69f; padding: 12px 8px; text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnContinue:hover {
+  background-color: #9bf;
+}
+
 .infoContainer {
   position: absolute;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  bottom: 0; left: 0;
+  width: 100%; height: 48px;
   padding: 8px;
-  background-color: #996; color: #111;
+  /*background-color: #996;*/ background-color: #eee; color: #111;
   font-weight: 600;
-  transform: translateY(calc(100vh - 64px));
 }
 
 .info {}
