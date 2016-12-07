@@ -125,7 +125,7 @@ var memory = (function () {
 
   function enablePlay() {
     $(".card").removeClass("disabled");
-    $(".board").on("click", ".card", function (e) {
+    $(".board").off("click").on("click", ".card", function (e) { // Bug: on event gets bound twice? Try to turn it off first.
       play($(e.target));
     });
   }
