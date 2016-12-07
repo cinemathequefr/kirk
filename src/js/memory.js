@@ -39,7 +39,8 @@ var memory = (function () {
   // var game = [];
   // var step = 0;
   // var moves = 0;
-  var game, step, moves;
+  var game, step, moves, pairsFound;
+  var pairCount;
 
 
   function init(_$rootEl) {
@@ -47,8 +48,8 @@ var memory = (function () {
   }
 
   function start() {
-    var boardSize = calcBoardSize(96, 100);
-    var pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
+    var boardSize = calcBoardSize(96, 108);
+    pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
     var rowsCount = boardSize.rowsCount;
     var cellSizePx = boardSize.cellSizePx;
     var at = (function (r) { // Converts board coordinates (x, y) to list index (i)
@@ -75,6 +76,7 @@ var memory = (function () {
     game = [];
     step = 0;
     moves = 0;
+    pairsFound = 0;
 
     // Build board
     $rootEl.html([
@@ -135,6 +137,9 @@ var memory = (function () {
 
   function play($card) {
     var card  = $card.data("card");
+    var $foundPair;
+
+    console.log("IN", step, card);
 
     if (step === 3 || step === 4) { // Face turned cards must be turned back before playing move
       if (card.state === 1) {
@@ -152,7 +157,7 @@ var memory = (function () {
 
     if (step === 0) {
       moves = moves + 1;
-      $(".info").html("Coups joués&nbsp;: " + moves);
+      // $(".info").html("Coups joués&nbsp;: " + moves + " Paires trouvées&nbsp;: " + pairsFound + " restantes&nbsp;: " + (pairCount - pairsFound));
     }
 
     if (step === 0 || step === 1) { // Player can face turn a card
@@ -167,12 +172,21 @@ var memory = (function () {
       var value = game[game.length - 1].value; // Value of the card just turned
       if (value === game[game.length - 2].value) { // Winning move
 
-        message(messagePairFound(value));
+        disablePlay();
 
-        $(".card").filter(function () {
+        $foundPair = $(".card").filter(function () {
           return $(this).data("card").value === value;
-        }).remove();
-        step = 0;
+        });
+
+        $foundPair.addClass("animated bounceIn");
+
+        window.setTimeout(function () {
+          $foundPair.remove();
+          step = 0;
+          pairsFound = pairsFound + 1;
+          message(messagePairFound(value));
+        }, 1000);
+
 
       } else { // Losing move
         step = 3;
@@ -182,6 +196,10 @@ var memory = (function () {
     if (step === 5) {
       step = 0;
     }
+
+    console.log("OUT", step, card);
+
+
   }
 
 
@@ -212,7 +230,6 @@ var memory = (function () {
   function messagePairFound(value) {
     var film = _(data).find({ "id": value });
     var title = ((film.titleFr !== "" && film.titleFr !== film.title) ? "&ldquo;" + film.titleFr + "&rdquo; (&ldquo;" + film.title + "&rdquo;)" : "&ldquo;" + film.title + "&rdquo;");
-
    return [
       "<img src='img/" + value + ".jpg' style='height: 100%;'><div style='position: relative; overflow: hidden;'>Kirk Douglas dans " + title + " de " + film.director + ", " + film.year +  "<div class='btnContinue'>Continuer</div></div>"
     ].join("");

@@ -4,7 +4,9 @@ html {
 
 body {
   overflow: hidden;
+  height: 100vh;
   font-size: 1rem; font-family: Source Sans Pro;
+  background-image: url(bg.jpg); background-position: 0% 50%; background-repeat: no-repeat; background-size: cover;
 }
 
 table {
@@ -87,10 +89,27 @@ td {
 .infoContainer {
   position: absolute;
   bottom: 0; left: 0;
-  width: 100%; height: 48px;
-  padding: 8px;
-  /*background-color: #996;*/ background-color: #eee; color: #111;
+  width: 100%; height: 72px;
+  /*background-color: #eee;*/ color: #111;
   font-weight: 600;
 }
 
-.info {}
+table.info {
+  width: 100%; max-width: 1000px;
+  margin: 0 auto;
+}
+
+th, td {
+  width: 25%;
+  height: 36px;
+}
+
+th {
+  padding-top: 2px;
+  vertical-align: top;
+}
+
+.info .moves { background-color: #369; }
+.info .pairsFound { background-color: #47a; }
+.info .pairsLeft { background-color: #58b; }
+.info .time { background-color: #69c; }
