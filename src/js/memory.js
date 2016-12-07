@@ -15,7 +15,7 @@ var memory = (function () {
     { id: 11, title: "In Harm's Way", titleFr: "Première victoire", director: "Otto Preminger", year: "1964" },
     { id: 12, title: "Saturn 3", titleFr: "", director: "Stanley Donen", year: "1980" },
     { id: 13, title: "There Was a Crooked Man", titleFr: "Le Reptile", director: "Joseph L. Mankiewicz", year: "1970" },
-    { id: 14, title: "The Arrangement", titleFr: "L'Arrengement", director: "Elia Kazan", year: "1969" },
+    { id: 14, title: "The Arrangement", titleFr: "L'Arrangement", director: "Elia Kazan", year: "1969" },
     { id: 15, title: "The Brotherhood", titleFr: "Les Frères siciliens", director: "Martin Ritt", year: "1968" },
     { id: 16, title: "Paris brûle-t-il", titleFr: "", director: "René Clément", year: "1965" },
     { id: 17, title: "Seven Days in May", titleFr: "Sept jours en mai", director: "John Frankenheimer", year: "1963" },
