@@ -35,13 +35,7 @@ var memory = (function () {
     { id: 31, title: "Man Without a Star", titleFr: "L'Homme qui n'a pas d'étoile", director: "King Vidor", year: "1954" }
   ];
 
-  var isGameRunning = false;
-  // var game = [];
-  // var step = 0;
-  // var moves = 0;
-  var game, step, moves, pairsFound;
-  var pairCount;
-
+  var game, step, moves, pairsFound, pairCount, isStarted, timer, elapsed;
 
   function init(_$rootEl) {
     $rootEl = _$rootEl.eq(0);
@@ -77,6 +71,8 @@ var memory = (function () {
     step = 0;
     moves = 0;
     pairsFound = 0;
+    isStarted = false;
+    elapsed = 0;
 
     // Build board
     $rootEl.html([
@@ -101,6 +97,8 @@ var memory = (function () {
       "</table>",
       "<div class='messageContainer'></div>"
     ].join(""));
+
+    updateInfo();
 
     $(".container").on("click", ".btnContinue", function () {
       $(".messageContainer").fadeOut(125, function () {
@@ -139,7 +137,14 @@ var memory = (function () {
     var card  = $card.data("card");
     var $foundPair;
 
-    console.log("IN", step, card);
+    if (isStarted === false) {
+      timer = window.setInterval(function () {
+        elapsed = elapsed + 1;
+        updateInfo();
+      }, 1000);
+      isStarted = true;
+    }
+
 
     if (step === 3 || step === 4) { // Face turned cards must be turned back before playing move
       if (card.state === 1) {
@@ -157,9 +162,7 @@ var memory = (function () {
 
     if (step === 0) {
       moves = moves + 1;
-      $("td.moves").html(moves);
-
-      // $(".info").html("Coups joués&nbsp;: " + moves + " Paires trouvées&nbsp;: " + pairsFound + " restantes&nbsp;: " + (pairCount - pairsFound));
+      updateInfo();
     }
 
     if (step === 0 || step === 1) { // Player can face turn a card
@@ -174,7 +177,14 @@ var memory = (function () {
       var value = game[game.length - 1].value; // Value of the card just turned
       if (value === game[game.length - 2].value) { // Winning move
 
+        pairsFound = pairsFound + 1;
         disablePlay();
+        updateInfo();
+
+        if (pairCount - pairsFound === 0) {
+          window.clearInterval(timer);
+          // TODO: end game
+        }
 
         $foundPair = $(".card").filter(function () {
           return $(this).data("card").value === value;
@@ -185,7 +195,6 @@ var memory = (function () {
         window.setTimeout(function () {
           $foundPair.remove();
           step = 0;
-          pairsFound = pairsFound + 1;
           message(messagePairFound(value));
         }, 1000);
 
@@ -199,11 +208,15 @@ var memory = (function () {
       step = 0;
     }
 
-    console.log("OUT", step, card);
-
-
   }
 
+
+  function updateInfo() {
+    $("td.moves").html(moves);
+    $("td.pairsLeft").html(pairCount - pairsFound);
+    $("td.time").html((Math.floor(elapsed / 60)) + ":" + ("00" + (elapsed % 60)).substr(-2, 2));
+    // $("td.time").html((Math.floor(elapsed / 60)) + ":" + (elapsed % 60));
+  }
 
 
   function showFace($card) { // Turn a card on its face
@@ -236,9 +249,6 @@ var memory = (function () {
       "<img src='img/" + value + ".jpg' style='height: 100%;'><div style='position: relative; overflow: hidden;'>Kirk Douglas dans " + title + " de " + film.director + ", " + film.year +  "<div class='btnContinue'>Continuer</div></div>"
     ].join("");
   }
-
-
-
 
 
 
