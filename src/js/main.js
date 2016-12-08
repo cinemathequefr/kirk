@@ -4,7 +4,7 @@ $(function() {
 
 
 
-  $(window).on("resize", memory.start);
+  $(window).on("resize", function () { memory.start(); });
   $(window).trigger("resize");
 
 

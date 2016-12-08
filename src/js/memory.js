@@ -41,10 +41,18 @@ var memory = (function () {
 
   function init(_$rootEl) {
     $rootEl = _$rootEl.eq(0);
+    $(".size > div").on("click", function () {
+      start(parseInt($(this).data("size"), 10));
+    });
   }
 
-  function start() {
-    var boardSize = calcBoardSize(96, 108);
+
+  function start(rows) {
+    boardSize = (rows ? calcBoardSizeRows(rows, 108) : calcBoardSize(96, 108));
+
+    $(".size > div").removeClass("on");
+    $(".size > div[data-size=" + boardSize.rowsCount + "]").addClass("on");
+
     pairCount = (boardSize.rowsCount * boardSize.rowsCount) / 2;
     var rowsCount = boardSize.rowsCount;
     var cellSizePx = boardSize.cellSizePx;
@@ -75,6 +83,8 @@ var memory = (function () {
     pairsFound = 0;
     isStarted = false;
     elapsed = 0;
+
+    stopTimer();
 
     // Build board
     $rootEl.html([
@@ -141,10 +151,6 @@ var memory = (function () {
     var $foundPair;
 
     if (isStarted === false) {
-      // timer = window.setInterval(function () {
-      //   elapsed = elapsed + 1;
-      //   updateInfo();
-      // }, 1000);
       startTimer();
       isStarted = true;
     }
@@ -187,7 +193,6 @@ var memory = (function () {
 
         if (pairCount - pairsFound === 0) {
           stopTimer();
-          // window.clearInterval(timer);
           // TODO: end game
         }
 
@@ -283,6 +288,15 @@ var memory = (function () {
       rowsCount: rowsCount,
       cellSizePx: Math.floor(boardSizePx / rowsCount)
     };
+  }
+
+  function calcBoardSizeRows(rows, vSpace) {
+    vSpace = vSpace || 0;
+    var boardSizePx = Math.min($(window).width(), $(window).height()) - vSpace;
+    return {
+      rowsCount: rows,
+      cellSizePx: Math.floor(boardSizePx / rows)
+    }
   }
 
 
