@@ -37,6 +37,8 @@ var memory = (function () {
 
   var game, step, moves, pairsFound, pairCount, isStarted, timer, elapsed;
 
+
+
   function init(_$rootEl) {
     $rootEl = _$rootEl.eq(0);
   }
@@ -103,6 +105,7 @@ var memory = (function () {
     $(".container").on("click", ".btnContinue", function () {
       $(".messageContainer").fadeOut(125, function () {
         enablePlay();
+        startTimer();
       });
     });
 
@@ -138,10 +141,11 @@ var memory = (function () {
     var $foundPair;
 
     if (isStarted === false) {
-      timer = window.setInterval(function () {
-        elapsed = elapsed + 1;
-        updateInfo();
-      }, 1000);
+      // timer = window.setInterval(function () {
+      //   elapsed = elapsed + 1;
+      //   updateInfo();
+      // }, 1000);
+      startTimer();
       isStarted = true;
     }
 
@@ -182,7 +186,8 @@ var memory = (function () {
         updateInfo();
 
         if (pairCount - pairsFound === 0) {
-          window.clearInterval(timer);
+          stopTimer();
+          // window.clearInterval(timer);
           // TODO: end game
         }
 
@@ -210,6 +215,16 @@ var memory = (function () {
 
   }
 
+  function startTimer() {
+    timer = window.setInterval(function () {
+      elapsed = elapsed + 1;
+      updateInfo();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    window.clearInterval(timer);
+  }
 
   function updateInfo() {
     $("td.moves").html(moves);
@@ -238,6 +253,7 @@ var memory = (function () {
   }
 
   function message(msg) {
+    stopTimer();
     disablePlay();
     $(".messageContainer").html(msg).show();
   }
@@ -260,7 +276,7 @@ var memory = (function () {
     vSpace = vSpace || 0;
     var boardSizePx = Math.min($(window).width(), $(window).height()) - vSpace;
     var maxRows = Math.floor(boardSizePx / minCellSize);
-    var rowsCount = _.reduce([8, 6, 4, 2], function (acc, i) { // This finds the most adequate value
+    var rowsCount = _.reduce([8, 6, 4], function (acc, i) { // This finds the most adequate value
       return (acc <= maxRows ? acc : i);
     });
     return {
