@@ -222,7 +222,6 @@ var memory = (function () {
   }
 
   function startTimer() {
-    console.log("Start timer");
     timer = window.setInterval(function () {
       elapsed = elapsed + 1;
       updateInfo();
@@ -237,7 +236,6 @@ var memory = (function () {
     $("td.moves").html(moves);
     $("td.pairsLeft").html(pairCount - pairsFound);
     $("td.time").html((Math.floor(elapsed / 60)) + ":" + ("00" + (elapsed % 60)).substr(-2, 2));
-    // $("td.time").html((Math.floor(elapsed / 60)) + ":" + (elapsed % 60));
   }
 
 
@@ -274,7 +272,6 @@ var memory = (function () {
   }
 
 
-
   // calcBoardSize
   // @param minCellSize <Int> : the minimum pixel size of a side (we're dealing with squares) of the desired table cell
   // @param vSpace <Int> : the overall pixel space to be left available vertically (for margins, etc.)
@@ -300,9 +297,6 @@ var memory = (function () {
       cellSizePx: Math.floor(boardSizePx / rows)
     }
   }
-
-
-
 
   return {
     init: init,
