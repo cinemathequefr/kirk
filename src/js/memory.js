@@ -267,7 +267,22 @@ var memory = (function () {
     var film = _(data).find({ "id": value });
     var title = ((film.titleFr !== "" && film.titleFr !== film.title) ? "&ldquo;" + film.titleFr + "&rdquo; (&ldquo;" + film.title + "&rdquo;)" : "&ldquo;" + film.title + "&rdquo;");
    return [
-      "<img src='img/" + value + ".jpg' style='height: 100%;'><div style='position: relative; overflow: hidden;'>Kirk Douglas dans " + title + " de " + film.director + ", " + film.year +  "<div class='btnContinue'>Continuer</div></div>"
+      "<img src='img/" + value + ".jpg' style='height: 100%;'>",
+      // "<div style='position: relative; overflow: hidden;'>",
+      // "Kirk Douglas dans ",
+      // title,
+      // " de ",
+      // film.director,
+      // ", ",
+      // film.year,
+      // "<div class='btnContinue'>Continuer</div></div>"
+      "<div style='position: relative; overflow: hidden;'>",
+      title,
+      "<br>",
+      film.director,
+      ", ",
+      film.year,
+      "<div class='btnContinue'>Continuer</div></div>"
     ].join("");
   }
 
