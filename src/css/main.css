@@ -36,10 +36,11 @@ a#logocf:hover, a#logocf:active {
   opacity: 0.85;
 }
 
+
 .title {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background-image: url(title.svg);
+  /*background-image: url(title.svg);*/
   background-size: contain;
   background-position: 50% 50%;
   background-repeat: no-repeat;
