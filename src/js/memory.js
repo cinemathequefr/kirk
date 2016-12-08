@@ -86,6 +86,7 @@ var memory = (function () {
 
     stopTimer();
 
+
     // Build board
     $rootEl.html([
       "<table class='board' style='width:" + (rowsCount * cellSizePx) + "px; height: " + (rowsCount * cellSizePx) + "px;'>",
@@ -115,7 +116,7 @@ var memory = (function () {
     $(".container").on("click", ".btnContinue", function () {
       $(".messageContainer").fadeOut(125, function () {
         enablePlay();
-        startTimer();
+        // startTimer();
       });
     });
 
@@ -221,6 +222,7 @@ var memory = (function () {
   }
 
   function startTimer() {
+    console.log("Start timer");
     timer = window.setInterval(function () {
       elapsed = elapsed + 1;
       updateInfo();
@@ -258,7 +260,7 @@ var memory = (function () {
   }
 
   function message(msg) {
-    stopTimer();
+    // stopTimer();
     disablePlay();
     $(".messageContainer").html(msg).show();
   }
