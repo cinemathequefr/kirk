@@ -194,6 +194,7 @@ var memory = (function () {
 
         if (pairCount - pairsFound === 0) {
           stopTimer();
+          $(".size > div").removeClass("on");
           // TODO: end game
         }
 
@@ -265,25 +266,22 @@ var memory = (function () {
 
   function messagePairFound(value) {
     var film = _(data).find({ "id": value });
-    var title = ((film.titleFr !== "" && film.titleFr !== film.title) ? "&ldquo;" + film.titleFr + "&rdquo; (&ldquo;" + film.title + "&rdquo;)" : "&ldquo;" + film.title + "&rdquo;");
    return [
       "<img src='img/" + value + ".jpg' style='height: 100%;'>",
-      // "<div style='position: relative; overflow: hidden;'>",
-      // "Kirk Douglas dans ",
-      // title,
-      // " de ",
-      // film.director,
-      // ", ",
-      // film.year,
-      // "<div class='btnContinue'>Continuer</div></div>"
-      "<div style='position: relative; overflow: hidden;'>",
-      title,
+      "<div>",
+      film.title,
+      (film.titleFr !== "" && film.titleFr !== film.title ? " (" + film.titleFr + ")" : ""),
       "<br>",
+      "<span class='smaller'>",
       film.director,
       ", ",
       film.year,
-      "<div class='btnContinue'>Continuer</div></div>"
+      "</span>",
+      "</div>",
+      "<div class='btnContinue'>Continuer</div>"
     ].join("");
+
+
   }
 
 

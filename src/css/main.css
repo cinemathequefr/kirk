@@ -36,21 +36,20 @@ a#logocf:hover, a#logocf:active {
   opacity: 0.85;
 }
 
-
-.title {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  /*background-image: url(title.svg);*/
+#title {
+  position: absolute; 
+  top: 5px; left: 5px; 
+  width: 120px; height: 500px;
+  background-image: url(title.png);
   background-size: contain;
-  background-position: 50% 50%;
+  background-position: 0 0;
   background-repeat: no-repeat;
 }
 
 .container {
   position: relative; overflow: hidden;
   width: 100%; max-width: 1000px;
-  margin: 0 auto; padding: 24px 24px 12px 24px;
-  /*box-sizing: border-box;*/
+  margin: 0 auto; padding: 24px 0 12px 0px;
 }
 
 .card {
@@ -103,11 +102,16 @@ a#logocf:hover, a#logocf:active {
   top: 50%; margin-top: -174px;
   padding: 24px;
   background-color: #eee; color: #111;
-  font-family: Courgette; font-family: Source Sans Pro; font-weight: 700;
-  font-size: 1.5rem; font-size:1.875rem;
-  text-transform: uppercase;
+  font-family: Courgette; /*font-weight: 700;*/
+  font-size: 1.875rem;
   box-shadow: 1px 1px 1px rgba(32, 32, 32, .5);
   box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+}
+
+.messageContainer .smaller {
+  font-size: 1.75rem;
 }
 
 
@@ -117,12 +121,17 @@ a#logocf:hover, a#logocf:active {
 }
 
 .btnContinue {
-  width: 300px; margin: 24px auto; overflow: hidden;
-  background-color: #69f; padding: 12px 8px; text-align: center;
-  cursor: pointer;
-  transition: 0.2s;
+  display: block; position: absolute;
+  bottom: 24px; right: 24px; height: 80px; width: calc(100% - 372px);
+  background-color: #69f;
+  font-family: Source Sans Pro; font-size: 1.5rem;
+  text-align: center; text-transform: uppercase;
+  line-height: 80px;
   border-radius: 4px;
+  transition: 0.2s;
 }
+
+
 
 .btnContinue:hover {
   background-color: #9bf;
